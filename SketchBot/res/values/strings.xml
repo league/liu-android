@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, this is a test of whether it wraps into the next line, etc. From SketchBotActivity!</string>
+    <string name="app_name">SketchBot</string>
+
+</resources>
