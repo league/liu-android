@@ -9,9 +9,15 @@
         android:layout_height="wrap_content"
         android:text="@string/hello" />
 
+    <Button
+        android:id="@+id/clearButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear" />
+
     <net.liucs.SketchBotView
         android:id="@+id/sketchBotView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
 
 </LinearLayout>
