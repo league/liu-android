@@ -9,11 +9,30 @@
         android:layout_height="wrap_content"
         android:text="@string/hello" />
 
-    <Button
-        android:id="@+id/clearButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Clear" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+	    <Button
+	        android:id="@+id/clearButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Clear" />
+	    <Button
+	        android:id="@+id/redButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="R" />
+	    <Button
+	        android:id="@+id/blueButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="B" />
+	    <Button
+	        android:id="@+id/whiteButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="W" />
+   	</LinearLayout>
 
     <net.liucs.SketchBotView
         android:id="@+id/sketchBotView1"

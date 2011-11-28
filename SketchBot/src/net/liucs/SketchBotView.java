@@ -25,16 +25,6 @@ public class SketchBotView extends View {
 		this.activity = a;
 	}
 	
-	private int myColor = Color.WHITE;
-	
-//	private void addMotionPoints(MotionEvent event) {
-//		for(int i = 0; i < event.getPointerCount(); i++) {
-//			int x = (int) event.getX(i);
-//			int y = (int) event.getY(i);
-//			points.add(new Point(x, y));
-//		}		
-//	}
-	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		super.onTouchEvent(event);
@@ -42,14 +32,14 @@ public class SketchBotView extends View {
 		case MotionEvent.ACTION_DOWN: {
 			Path path = new Path();
 			path.moveTo(event.getX(0), event.getY(0));
-			activity.paths.add(path);
+			activity.paths.add(new PathColorPair(path, activity.currentColor));
 			invalidate();
 			return true;
 		}
 		case MotionEvent.ACTION_MOVE:
 		case MotionEvent.ACTION_UP: {
-			Path path = activity.paths.get(activity.paths.size()-1);
-			path.lineTo(event.getX(0),event.getY(0));
+			PathColorPair pc = activity.paths.get(activity.paths.size()-1);
+			pc.path.lineTo(event.getX(0),event.getY(0));
 			invalidate();
 			return true;
 		}
@@ -62,10 +52,10 @@ public class SketchBotView extends View {
 	public void draw(Canvas canvas) {
 		super.draw(canvas);
 		Paint paint = new Paint();
-		paint.setColor(myColor);
 		paint.setStyle(Paint.Style.STROKE);
-		for(Path p : activity.paths) {
-			canvas.drawPath(p, paint);
+		for(PathColorPair pc : activity.paths) {
+			paint.setColor(pc.color);
+			canvas.drawPath(pc.path, paint);
 		}
 	}
 
