@@ -88,7 +88,6 @@ public class FloodPuzActivity extends Activity {
         Button newButton = new Button(this);
         newButton.setText("New");
         newButton.setOnClickListener(new View.OnClickListener() {
-			@Override
 			public void onClick(View v) {
 				resetBoard();
 			}
@@ -185,7 +184,6 @@ public class FloodPuzActivity extends Activity {
     		assert(id >= 0 && id < buttonImages.length);
     		this.id = id;
     	}
-		@Override
 		public void onClick(View v) {
 			if(!winner && moveCount > 0 && board[0][0].getColor() != id) { // ignore repeated moves
 				setMoveCount(moveCount-1);

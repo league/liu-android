@@ -30,7 +30,7 @@ public class SketchBotActivity extends Activity {
 		ColorChanger(int c) {
 			targetColor = c;
 		}
-		@Override public void onClick(View v) {
+		public void onClick(View v) {
 			currentColor = targetColor;
 		}
 	}
@@ -44,7 +44,6 @@ public class SketchBotActivity extends Activity {
         view.setParentActivity(this);
         Button clear = (Button) findViewById(R.id.clearButton);
         clear.setOnClickListener(new View.OnClickListener() {
-			@Override
 			public void onClick(View v) {
 				paths.clear();
 				view.invalidate();
