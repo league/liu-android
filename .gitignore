@@ -2,3 +2,8 @@ FloodPuz/bin
 FloodPuz/gen
 SketchBot/bin
 SketchBot/gen
+Yatzy/bin
+Yatzy/gen
+*.aux
+*.log
+*.out
