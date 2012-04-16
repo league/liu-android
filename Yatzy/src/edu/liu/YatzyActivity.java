@@ -1,9 +1,12 @@
 package edu.liu;
 
+import java.util.Random;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,6 +14,8 @@ import android.widget.TextView;
 public class YatzyActivity extends Activity {
 	final int NUM_DICE = 5;
 	Die[] dice = new Die[NUM_DICE];
+	Random rng = new Random();
+	Button roll;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,16 @@ public class YatzyActivity extends Activity {
         	diceRow.addView(dice[i]);
         }
         main.addView(diceRow);
+
+        roll = new Button(this);
+        roll.setText("Roll");
+        roll.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				rollDice();
+			}
+		});
+        main.addView(roll);
         
         TextView tv = new TextView(this);
         tv.setText("Hello, world.");
@@ -32,7 +47,16 @@ public class YatzyActivity extends Activity {
         
         setContentView(main);
     }
-    
+
+	void rollDice() {
+		for(int i = 0; i < NUM_DICE; i++) {
+			if(!dice[i].on) {
+				dice[i].value = rng.nextInt(6);
+				dice[i].setResource();
+			}
+		}
+	}
+	
     static int[] onDice = new int[] {
     	R.drawable.die1, R.drawable.die2, R.drawable.die3,
     	R.drawable.die4, R.drawable.die5, R.drawable.die6,
