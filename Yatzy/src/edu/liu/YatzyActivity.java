@@ -16,6 +16,7 @@ public class YatzyActivity extends Activity {
 	Die[] dice = new Die[NUM_DICE];
 	Random rng = new Random();
 	Button roll;
+	int rollsLeft = 3;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,16 @@ public class YatzyActivity extends Activity {
 			}
 		});
         main.addView(roll);
+
+        Button restart = new Button(this);
+        restart.setText("Restart");
+        restart.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				restart();
+			}
+		});
+        main.addView(restart);
         
         TextView tv = new TextView(this);
         tv.setText("Hello, world.");
@@ -49,12 +60,25 @@ public class YatzyActivity extends Activity {
     }
 
 	void rollDice() {
-		for(int i = 0; i < NUM_DICE; i++) {
-			if(!dice[i].on) {
-				dice[i].value = rng.nextInt(6);
-				dice[i].setResource();
+		if(rollsLeft > 0) {
+			for(int i = 0; i < NUM_DICE; i++) {
+				if(!dice[i].on) {
+					dice[i].value = rng.nextInt(6);
+					dice[i].setResource();
+				}
 			}
+			setRollsLeft(rollsLeft-1);
 		}
+	}
+
+	void setRollsLeft(int r) {
+		rollsLeft = r;
+		roll.setText("Roll (" + r + " left)");
+		roll.setEnabled(rollsLeft > 0);
+	}
+	
+	void restart() {
+		setRollsLeft(3);
 	}
 	
     static int[] onDice = new int[] {
