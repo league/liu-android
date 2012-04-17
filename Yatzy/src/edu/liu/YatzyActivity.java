@@ -18,6 +18,8 @@ public class YatzyActivity extends Activity {
 	Button roll;
 	int rollsLeft = 3;
 	ThreesScore threes;
+	TextView scoreText;
+	int score;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,10 @@ public class YatzyActivity extends Activity {
 		});
         main.addView(roll);
 
+        scoreText = new TextView(this);
+        scoreText.setText("Score: 0");
+        main.addView(scoreText);
+        
         threes = new ThreesScore(this);
         main.addView(threes);
         
@@ -76,6 +82,11 @@ public class YatzyActivity extends Activity {
 		}
 	}
 
+	void setScore(int s) {
+		score = s;
+		scoreText.setText("Score: "+s);
+	}
+	
 	void setRollsLeft(int r) {
 		rollsLeft = r;
 		roll.setText("Roll (" + r + " left)");
@@ -128,6 +139,13 @@ public class YatzyActivity extends Activity {
 			super(context);
 			b = new Button(context);
 			b.setText("Threes");
+			b.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					setScore(score + ourScore);
+					b.setEnabled(false);
+				}
+			});
 			addView(b);
 			t = new TextView(context);
 			t.setText("-");
