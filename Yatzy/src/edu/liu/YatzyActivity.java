@@ -17,7 +17,7 @@ public class YatzyActivity extends Activity {
 	Random rng = new Random();
 	Button roll;
 	int rollsLeft = 3;
-	ThreesScore threes;
+	ScoreRule[] rules = new ScoreRule[12];
 	TextView scoreText;
 	int score;
 	
@@ -48,9 +48,14 @@ public class YatzyActivity extends Activity {
         scoreText = new TextView(this);
         scoreText.setText("Score: 0");
         main.addView(scoreText);
-        
-        threes = new ThreesScore(this);
-        main.addView(threes);
+
+        rules[0] = new SingleValueRule(this, 3);
+        rules[1] = new SingleValueRule(this, 4);
+        for(ScoreRule r : rules) {
+        	if(r != null) {
+        		main.addView(r);
+        	}
+        }
         
         Button restart = new Button(this);
         restart.setText("Restart");
@@ -78,7 +83,11 @@ public class YatzyActivity extends Activity {
 				}
 			}
 			setRollsLeft(rollsLeft-1);
-			threes.computeScore();
+	        for(ScoreRule r : rules) {
+	        	if(r != null) {
+	        		r.computeScore();
+	        	}
+	        }
 		}
 	}
 
@@ -131,18 +140,20 @@ public class YatzyActivity extends Activity {
 		}
     }
     
-    class ThreesScore extends LinearLayout {
+    abstract class ScoreRule extends LinearLayout {
     	Button b;
     	TextView t;
     	int ourScore;
-		public ThreesScore(Context context) {
+    	boolean enabled = true;
+		public ScoreRule(Context context, String label) {
 			super(context);
 			b = new Button(context);
-			b.setText("Threes");
+			b.setText(label);
 			b.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					setScore(score + ourScore);
+					enabled = false;
 					b.setEnabled(false);
 				}
 			});
@@ -151,18 +162,28 @@ public class YatzyActivity extends Activity {
 			t.setText("-");
 			addView(t);
 		}
-		void computeScore() {
-			int sum = 0;
-			for(int i = 0; i < NUM_DICE; i++) {
-				if(dice[i].value == 2) {
-					sum += 3;
-				}
-			}
-			setOurScore(sum);
-		}
+		abstract void computeScore();
 		void setOurScore(int s) {
 			ourScore = s;
 			t.setText(""+s);
 		}
+    }
+
+    class SingleValueRule extends ScoreRule {
+    	int value;
+    	public SingleValueRule(Context context, int value) {
+    		super(context, ""+(value+1)+"s");
+    		this.value = value;
+    	}
+    	void computeScore() {
+    		if(!enabled) return;
+			int sum = 0;
+			for(int i = 0; i < NUM_DICE; i++) {
+				if(dice[i].value == value) {
+					sum += value+1;
+				}
+			}
+			setOurScore(sum);
+    	}
     }
 }
