@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<h1 id="android-programming-workshop">Android Programming Workshop</h1>
+<p>Christopher League<br />17 April 2012<br />LIU Brooklyn</p>
+<p><a href="https://github.com/league/liu-android/"><code class="url">https://github.com/league/liu-android/</code></a></p>
+<h1 id="the-game">The game</h1>
+<p>We're going to build a version of the game Yahtzee™ / Yatzy / Generala, also known as &quot;poker dice.&quot; The idea is that players roll five dice, and then score them similar to poker hands. There are hands such as a straight, three of a kind, full house, etc.</p>
+<div class="figure">
+<img src="assets/yatzy-scorecard.jpg" alt="Yatzy score card" /><p class="caption">Yatzy score card</p>
+</div>
+<h1 id="the-tools">The tools</h1>
+<p>I'm using <strong>Eclipse IDE</strong> Android Development: <a href="http://www.eclipse.org/downloads/"><code class="url">http://www.eclipse.org/downloads/</code></a> There are other good choices, such as the IntelliJ IDEA by JetBRAINS — their Community Edition is free: <a href="http://www.jetbrains.com/idea/download/"><code class="url">http://www.jetbrains.com/idea/download/</code></a></p>
+<p>You can find complete directions for setting up Eclipse and the Android SDK at: <a href="http://developer.android.com/sdk/installing.html"><code class="url">http://developer.android.com/sdk/installing.html</code></a></p>
+<h1 id="hello-world">Hello, World</h1>
+<p>Once Eclipse and the ADT are set up correctly, you can ask them to generate a working sample project to get you started.</p>
+<p>From the menu, select <strong>File &gt; New &gt; Other…</strong> and choose <strong>Android Project</strong> from the wizard.</p>
+<div class="figure">
+<img src="assets/android-project.png" alt="Android Project" /><p class="caption">Android Project</p>
+</div>
+<p>Hit <strong>Next</strong> and give your project a name, preferably starting with a capital letter. I chose <code>Yatzy</code>. On the <strong>next</strong> screen, choose the Android platform versions you're building for, then (<strong>next</strong> screen) you have to provide the package name. This is usually a reversed domain name, such as <code>edu.liu</code>. For now, it doesn't really matter.</p>
+<p>When you <strong>finish,</strong> you should have an open project in the left pane. Go into <code>src/edu.liu</code> and open <code>YatzyActivity.java</code>.</p>
+<div class="figure">
+<img src="assets/android-folders.png" alt="Folders in the Package Explorer" /><p class="caption">Folders in the Package Explorer</p>
+</div>
+<p>Select <strong>Run &gt; Run</strong> from the menu, and choose <strong>Android Application.</strong> The Android emulator should open up. It will take a long time to boot the first time, but eventually you should see your application: &quot;Hello World, YatzyActivity!&quot;</p>
+<div class="figure">
+<img src="assets/hello-world.png" alt="Hello World" /><p class="caption">Hello World</p>
+</div>
+<h1 id="programmatic-view">Programmatic view</h1>
+<p>The given &quot;hello world&quot; code uses an XML document for the main view: <code>R.layout.main</code>. You can find the details in <code>res/layout/main.xml</code>, but instead we'll generate the view programmatically.</p>
+<p>After <code>super.onCreate</code>, replace the <code>setContentView</code> line with this code:</p>
+<pre class="sourceCode java"><code class="sourceCode java">        LinearLayout main = <span class="kw">new</span> <span class="fu">LinearLayout</span>(<span class="kw">this</span>);
+        main.<span class="fu">setOrientation</span>(LinearLayout.<span class="fu">VERTICAL</span>);
+        TextView tv = <span class="kw">new</span> <span class="fu">TextView</span>(<span class="kw">this</span>);
+        tv.<span class="fu">setText</span>(<span class="st">&quot;Hello, world.&quot;</span>);
+        main.<span class="fu">addView</span>(tv);
+        <span class="fu">setContentView</span>(main);</code></pre>
+<p>You'll also need to add these imports at the top. (Eclipse can do this for you if you click on the error indicator in the left margin.)</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">import android.widget.LinearLayout;</span>
+<span class="kw">import android.widget.TextView;</span></code></pre>
+<p>You can run this version again, and see your message appear.</p>
+<p>[Code up to here is available as git commit <code>5d5af056</code>.]</p>
+<h1 id="images">Images</h1>
+<p>In your project, create a sub-folder under <code>res</code> called <code>drawable</code>. (There are already other folders called <code>drawable-hdpi</code>, etc.)</p>
+<p>Copy the twelve image files from <a href="https://github.com/league/liu-android/tree/master/Yatzy/res/drawable"><code class="url">https://github.com/league/liu-android/tree/master/Yatzy/res/drawable</code></a> and save them to your new <code>drawable</code> folder. They represent the six dice, both in color and gray-scale. Now you can refer to them in your code using <code>R.drawable.die1</code>, for example:</p>
+<pre class="sourceCode java"><code class="sourceCode java">        ImageView d = <span class="kw">new</span> ImageView(<span class="kw">this</span>);
+        d.<span class="fu">setImageResource</span>(R.<span class="fu">drawable</span>.<span class="fu">die1</span>);
+        main.<span class="fu">addView</span>(d);</code></pre>
+<p>Add the above code before you create the <code>TextView</code>. You'll need to import <code>android.widget.ImageView</code>. Run it and you should see the die containing 1 dot above the text message.</p>
+<p>Let's put all six dice. We'll need an array to access the different names <code>die1</code>, <code>die2</code>, … programmatically. Put these array definitions within class <code>YatzyActivity</code> but outside of the method <code>onCreate</code>:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">static</span> <span class="dt">int</span>[] onDice = <span class="kw">new</span> <span class="dt">int</span>[] {
+        R.<span class="fu">drawable</span>.<span class="fu">die1</span>, R.<span class="fu">drawable</span>.<span class="fu">die2</span>, R.<span class="fu">drawable</span>.<span class="fu">die3</span>,
+        R.<span class="fu">drawable</span>.<span class="fu">die4</span>, R.<span class="fu">drawable</span>.<span class="fu">die5</span>, R.<span class="fu">drawable</span>.<span class="fu">die6</span>,
+    };
+    <span class="dt">static</span> <span class="dt">int</span>[] offDice = <span class="kw">new</span> <span class="dt">int</span>[] {
+        R.<span class="fu">drawable</span>.<span class="fu">die1off</span>, R.<span class="fu">drawable</span>.<span class="fu">die2off</span>, R.<span class="fu">drawable</span>.<span class="fu">die3off</span>,
+        R.<span class="fu">drawable</span>.<span class="fu">die4off</span>, R.<span class="fu">drawable</span>.<span class="fu">die5off</span>, R.<span class="fu">drawable</span>.<span class="fu">die6off</span>,
+    };</code></pre>
+<p>Then, swap out your <code>ImageView</code> code with this loop.</p>
+<pre class="sourceCode java"><code class="sourceCode java">        LinearLayout diceRow = <span class="kw">new</span> <span class="fu">LinearLayout</span>(<span class="kw">this</span>);
+        <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; onDice.<span class="fu">length</span>; i++) {
+            ImageView im = <span class="kw">new</span> ImageView(<span class="kw">this</span>);
+            im.<span class="fu">setImageResource</span>(onDice[i]);
+            diceRow.<span class="fu">addView</span>(im);
+        }
+        main.<span class="fu">addView</span>(diceRow);</code></pre>
+<p>Run it and you'll see all six dice appear across one row.</p>
+<p>[Code up to here is available as git commit <code>80d5119e</code>.]</p>
+<h1 id="click">Click</h1>
+<p>Now, we'll want to be able to click on those dice to enable or disable them for the next roll. To do that, let's make <code>Die</code> a nested subclass of <code>ImageView</code>:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">class</span> Die <span class="kw">extends</span> ImageView {
+        <span class="dt">int</span> value;
+        <span class="dt">boolean</span> on;
+        <span class="kw">public</span> <span class="fu">Die</span>(Context context, <span class="dt">int</span> value) {
+            <span class="kw">super</span>(context);
+            <span class="kw">this</span>.<span class="fu">value</span> = value;
+            <span class="kw">this</span>.<span class="fu">on</span> = <span class="kw">false</span>;
+            <span class="fu">setResource</span>();
+        }
+        <span class="dt">void</span> <span class="fu">setResource</span>() {
+            <span class="kw">if</span>(on) {
+                <span class="fu">setImageResource</span>(onDice[value]);
+            }
+            <span class="kw">else</span> {
+                <span class="fu">setImageResource</span>(offDice[value]);
+            }
+        }
+    }</code></pre>
+<p>Then, create a couple of <em>global</em> variables in the <code>YatzyActivity</code> class:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">final</span> <span class="dt">int</span> NUM_DICE = <span class="dv">5</span>;
+    Die[] dice = <span class="kw">new</span> Die[NUM_DICE];</code></pre>
+<p>And rewrite your <code>onCreate</code> loop to use the <code>Die</code> class instead of creating <code>ImageView</code>s directly:</p>
+<pre class="sourceCode java"><code class="sourceCode java">        LinearLayout diceRow = <span class="kw">new</span> <span class="fu">LinearLayout</span>(<span class="kw">this</span>);
+        <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; NUM_DICE; i++) {
+            dice[i] = <span class="kw">new</span> <span class="fu">Die</span>(<span class="kw">this</span>, i);
+            diceRow.<span class="fu">addView</span>(dice[i]);
+        }
+        main.<span class="fu">addView</span>(diceRow);</code></pre>
+<p>The result should be the same, except that the 6-die is missing because <code>NUM_DICE</code> is set to 5.</p>
+<p>The dice are still not clickable though. For that, we need to arrange for <code>Die</code> objects to be <em>listeners.</em> Add this one method call after <code>super(context)</code> in the <code>Die</code> constructor:</p>
+<pre class="sourceCode java"><code class="sourceCode java">            <span class="fu">setOnClickListener</span>(<span class="kw">this</span>);</code></pre>
+<p>It will generate an error message at first. We need to modify the declaration of the <code>Die</code> class as so:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">class</span> Die <span class="kw">extends</span> ImageView <span class="kw">implements</span> View.<span class="fu">OnClickListener</span></code></pre>
+<p>Now <em>that</em> line indicates an error, because we have to add the <code>onClick</code> method. Click on the error indicator, and Eclipse can generate the stub of this method for you:</p>
+<pre class="sourceCode java"><code class="sourceCode java">        @Override
+        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onClick</span>(View v) {
+            <span class="co">// TODO Auto-generated method stub</span>
+        }</code></pre>
+<p>Replace the <code>TODO</code> comment with these two lines, to toggle the <code>on</code> Boolean and then reset the image resource:</p>
+<pre class="sourceCode java"><code class="sourceCode java">            <span class="kw">this</span>.<span class="fu">on</span> = !<span class="kw">this</span>.<span class="fu">on</span>;
+            <span class="fu">setResource</span>();</code></pre>
+<p>Now when you run, you should be able to toggle the dice between gray-scale and red by clicking on them.</p>
+<div class="figure">
+<img src="assets/dice-toggle.png" alt="Toggle the color of the dice" /><p class="caption">Toggle the color of the dice</p>
+</div>
+<p>[Code up to here is available as git commit <code>d059dbae</code>.]</p>
+<h1 id="roll-the-dice">Roll the dice</h1>
+<p>Now we need to select the values of the dice randomly. Add the following variables to class <code>YatzyActivity</code>:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    Random rng = <span class="kw">new</span> Random();
+    Button roll;</code></pre>
+<p>(These are imported from <code>java.util.Random</code> and <code>android.widget.Button</code>, respectively.) In <code>onCreate</code>, after adding the <code>diceRow</code>, set up the new button:</p>
+<pre class="sourceCode java"><code class="sourceCode java">        roll = <span class="kw">new</span> Button(<span class="kw">this</span>);
+        roll.<span class="fu">setText</span>(<span class="st">&quot;Roll&quot;</span>);
+        roll.<span class="fu">setOnClickListener</span>(<span class="kw">new</span> View.<span class="fu">OnClickListener</span>() {
+            @Override
+            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onClick</span>(View v) {
+                <span class="fu">rollDice</span>();
+            }
+        });
+        main.<span class="fu">addView</span>(roll);</code></pre>
+<p>We gave it an <em>inline</em> click listener, which will call the method <code>rollDice()</code> when the roll button is clicked. That method is defined in <code>YatzyActivity</code>, outside of any other method:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">void</span> <span class="fu">rollDice</span>() {
+        <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; NUM_DICE; i++) {
+            <span class="kw">if</span>(!dice[i].<span class="fu">on</span>) {
+                dice[i].<span class="fu">value</span> = rng.<span class="fu">nextInt</span>(<span class="dv">6</span>);
+                dice[i].<span class="fu">setResource</span>();
+            }
+        }
+    }</code></pre>
+<p>It will loop through all the dice, and pick a random number for each one that is <strong>not</strong> <code>on</code>. (The dice that are <code>on</code> are colored red, and that means the user is keeping their values through the next roll.)</p>
+<p><strong>Note:</strong> there is something slightly strange going on that we didn't point out until now. We are actually using the integers zero through five to represent values on the dice. <code>rng.nextInt(6)</code> produces a random value between 0 and 5 inclusive, and this is later used as an index of the <code>onDice</code> or <code>offDice</code> arrays. Of course, array indices start with zero, so it works out well. The only problem will happen when we try to <em>compute scores</em> — then we'll have to add one to these values to get an integer from 0 to 6 inclusive.</p>
+<p>[Code up to here is available as git commit <code>97a983fe</code>.]</p>
+<h1 id="limit-number-of-rolls">Limit number of rolls</h1>
+<p>We should only be able to roll three times before having to score the dice. Add this variable:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">int</span> rollsLeft = <span class="dv">3</span>;</code></pre>
+<p>Modify <code>rollDice</code> so that it guards against rolling when <code>rollsLeft</code> reaches zero. We'll also add a <code>setRollsLeft</code> that can change the text on the roll button and disable it when appropriate.</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">void</span> <span class="fu">rollDice</span>() {
+        <span class="kw">if</span>(rollsLeft &gt; <span class="dv">0</span>) {
+            <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; NUM_DICE; i++) {
+                <span class="kw">if</span>(!dice[i].<span class="fu">on</span>) {
+                    dice[i].<span class="fu">value</span> = rng.<span class="fu">nextInt</span>(<span class="dv">6</span>);
+                    dice[i].<span class="fu">setResource</span>();
+                }
+            }
+            <span class="fu">setRollsLeft</span>(rollsLeft<span class="dv">-1</span>);
+        }
+    }
+
+    <span class="dt">void</span> <span class="fu">setRollsLeft</span>(<span class="dt">int</span> r) {
+        rollsLeft = r;
+        roll.<span class="fu">setText</span>(<span class="st">&quot;Roll (&quot;</span> + r + <span class="st">&quot; left)&quot;</span>);
+        roll.<span class="fu">setEnabled</span>(rollsLeft &gt; <span class="dv">0</span>);
+    }
+
+    <span class="dt">void</span> <span class="fu">restart</span>() {
+        <span class="fu">setRollsLeft</span>(<span class="dv">3</span>);
+    }</code></pre>
+<p>Finally, this <code>restart</code> method can be used to reset the <code>rollsLeft</code> variable on request. Hook it up to a new restart button in <code>onCreate</code>:</p>
+<pre class="sourceCode java"><code class="sourceCode java">        Button restart = <span class="kw">new</span> Button(<span class="kw">this</span>);
+        restart.<span class="fu">setText</span>(<span class="st">&quot;Restart&quot;</span>);
+        restart.<span class="fu">setOnClickListener</span>(<span class="kw">new</span> View.<span class="fu">OnClickListener</span>() {
+            @Override
+            <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onClick</span>(View v) {
+                <span class="fu">restart</span>();
+            }
+        });
+        main.<span class="fu">addView</span>(restart);</code></pre>
+<div class="figure">
+<img src="assets/restart.png" alt="Rolls-left and restart" /><p class="caption">Rolls-left and restart</p>
+</div>
+<p>[Code up to here is available as git commit <code>cd86c8c3</code>.]</p>
+<h1 id="scoring">Scoring</h1>
+<p>Okay, now we're ready to dig into scoring. There are a variety of different hands, with different rules. See <a href="http://en.wikipedia.org/wiki/Yatzy#Scoring"><code class="url">http://en.wikipedia.org/wiki/Yatzy#Scoring</code></a></p>
+<p>We'll represent each kind of hand as its own object, and they will all implement a similar interface. Each should be a horizontal <code>LinearLayout</code>, with a <code>Button</code> and a <code>TextView</code> indicating the score, if applicable.</p>
+<p>Let's start by just implementing this rule:</p>
+<ul>
+<li><strong>Threes:</strong> The sum of all dice showing the number 3.</li>
+</ul>
+<p>Add this nested class:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">class</span> ThreesScore <span class="kw">extends</span> LinearLayout {
+        Button b;
+        TextView t;
+        <span class="kw">public</span> <span class="fu">ThreesScore</span>(Context context) {
+            <span class="kw">super</span>(context);
+            b = <span class="kw">new</span> Button(context);
+            b.<span class="fu">setText</span>(<span class="st">&quot;Threes&quot;</span>);
+            <span class="fu">addView</span>(b);
+            t = <span class="kw">new</span> <span class="fu">TextView</span>(context);
+            t.<span class="fu">setText</span>(<span class="st">&quot;-&quot;</span>);
+            <span class="fu">addView</span>(t);
+        }
+    }</code></pre>
+<p>And include it in <code>onCreate</code>, above the restart button:</p>
+<pre class="sourceCode java"><code class="sourceCode java">        threes = <span class="kw">new</span> <span class="fu">ThreesScore</span>(<span class="kw">this</span>);
+        main.<span class="fu">addView</span>(threes);</code></pre>
+<p>You'll have to add <code>threes</code> as a global variable in <code>YatzyActivity</code>. Now we'll add the following methods to <code>ThreesScore</code>:</p>
+<pre class="sourceCode java"><code class="sourceCode java">        <span class="dt">void</span> <span class="fu">computeScore</span>() {
+            <span class="dt">int</span> sum = <span class="dv">0</span>;
+            <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; NUM_DICE; i++) {
+                <span class="kw">if</span>(dice[i].<span class="fu">value</span> == <span class="dv">2</span>) {
+                    sum += <span class="dv">3</span>;
+                }
+            }
+            <span class="fu">setOurScore</span>(sum);
+        }
+
+        <span class="dt">void</span> <span class="fu">setOurScore</span>(<span class="dt">int</span> s) {
+            ourScore = s;
+            t.<span class="fu">setText</span>(<span class="st">&quot;&quot;</span>+s);
+        }</code></pre>
+<p>where <code>ourScore</code> is an integer instance variable of <code>ThreesScore</code>. Finally, call <code>threes.computeScore()</code> after rolling all five dice in <code>rollDice</code>.</p>
+<div class="figure">
+<img src="assets/threes.png" alt="With &#39;threes&#39; scoring option" /><p class="caption">With 'threes' scoring option</p>
+</div>
+<p>[Code up to here is available as git commit <code>097a491a</code>.]</p>
+<h1 id="keep-a-global-score">Keep a global score</h1>
+<p>Add these variables in <code>YatzyActivity</code>:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    TextView scoreText;
+    <span class="dt">int</span> score;</code></pre>
+<p>Initialize the score view below the roll button:</p>
+<pre class="sourceCode java"><code class="sourceCode java">        scoreText = <span class="kw">new</span> <span class="fu">TextView</span>(<span class="kw">this</span>);
+        scoreText.<span class="fu">setText</span>(<span class="st">&quot;Score: 0&quot;</span>);
+        main.<span class="fu">addView</span>(scoreText);</code></pre>
+<p>and use this method to update the score integer and the text view:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">void</span> <span class="fu">setScore</span>(<span class="dt">int</span> s) {
+        score = s;
+        scoreText.<span class="fu">setText</span>(<span class="st">&quot;Score: &quot;</span>+s);
+    }</code></pre>
+<p>Now, when we click the button in the <code>Threes</code> scoring object, we can add a listener that will update the total score:</p>
+<pre class="sourceCode java"><code class="sourceCode java">            b.<span class="fu">setText</span>(<span class="st">&quot;Threes&quot;</span>);
+            b.<span class="fu">setOnClickListener</span>(<span class="kw">new</span> View.<span class="fu">OnClickListener</span>() {
+                @Override
+                <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onClick</span>(View v) {
+                    <span class="fu">setScore</span>(score + ourScore);
+                    b.<span class="fu">setEnabled</span>(<span class="kw">false</span>);
+                }
+            });</code></pre>
+<p>[Code up to here is available as git commit <code>043b6b47</code>.]</p>
+<h1 id="generalize">Generalize</h1>
+<p>Try to write some other scoring rules, such as three of a kind or full house. Then, try to factor out what they have in common as a super class — management of the button, <code>ourScore</code>, etc. Then, in <code>rollDice</code>, call <code>computeScore</code> on <em>all</em> the scoring rules, not just <code>threes</code>.</p>
+<p>[Code up to here is available as git commit <code>b69d499f</code>.]</p>
+<p>Enjoy!</p>
+</body>
+</html>
