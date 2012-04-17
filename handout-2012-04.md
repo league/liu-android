@@ -7,6 +7,15 @@ LIU Brooklyn
 
 <https://github.com/league/liu-android/>
 
+# The game
+
+We're going to build a version of the game Yahtzee™ / Yatzy /
+Generala, also known as "poker dice." The idea is that players roll
+five dice, and then score them similar to poker hands. There are hands
+such as a straight, three of a kind, full house, etc.
+
+![Yatzy score card](assets/yatzy-scorecard.jpg)
+
 # The tools
 
 I'm using **Eclipse IDE** Android Development:
@@ -274,3 +283,170 @@ that means the user is keeping their values through the next roll.)
   these values to get an integer from 0 to 6 inclusive.
 
 [Code up to here is available as git commit `97a983fe`.]
+
+# Limit number of rolls
+
+We should only be able to roll three times before having to score the
+dice. Add this variable:
+
+~~~~ {.java}
+	int rollsLeft = 3;
+~~~~
+
+Modify `rollDice` so that it guards against rolling when `rollsLeft`
+reaches zero. We'll also add a `setRollsLeft` that can change the text
+on the roll button and disable it when appropriate.
+
+~~~~ {.java}
+    void rollDice() {
+        if(rollsLeft > 0) {
+            for(int i = 0; i < NUM_DICE; i++) {
+                if(!dice[i].on) {
+                    dice[i].value = rng.nextInt(6);
+                    dice[i].setResource();
+                }
+            }
+            setRollsLeft(rollsLeft-1);
+        }
+    }
+ 
+    void setRollsLeft(int r) {
+        rollsLeft = r;
+        roll.setText("Roll (" + r + " left)");
+        roll.setEnabled(rollsLeft > 0);
+    }
+    
+    void restart() {
+        setRollsLeft(3);
+    }
+~~~~
+
+Finally, this `restart` method can be used to reset the `rollsLeft`
+variable on request. Hook it up to a new restart button in `onCreate`:
+
+~~~~ {.java}
+        Button restart = new Button(this);
+        restart.setText("Restart");
+        restart.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				restart();
+			}
+		});
+        main.addView(restart);
+~~~~
+
+![Rolls-left and restart](assets/restart.png)
+
+[Code up to here is available as git commit `cd86c8c3`.]
+
+# Scoring
+
+Okay, now we're ready to dig into scoring. There are a variety of
+different hands, with different rules. See
+<http://en.wikipedia.org/wiki/Yatzy#Scoring>
+
+We'll represent each kind of hand as its own object, and they will all
+implement a similar interface. Each should be a horizontal
+`LinearLayout`, with a `Button` and a `TextView` indicating the score,
+if applicable.
+
+Let's start by just implementing this rule:
+
+ * **Threes:** The sum of all dice showing the number 3.
+
+Add this nested class:
+
+~~~~ {.java}
+    class ThreesScore extends LinearLayout {
+    	Button b;
+    	TextView t;
+		public ThreesScore(Context context) {
+			super(context);
+			b = new Button(context);
+			b.setText("Threes");
+			addView(b);
+			t = new TextView(context);
+			t.setText("-");
+			addView(t);
+		}
+    }
+~~~~
+
+And include it in `onCreate`, above the restart button:
+
+~~~~ {.java}
+        threes = new ThreesScore(this);
+        main.addView(threes);
+~~~~
+
+You'll have to add `threes` as a global variable in `YatzyActivity`.
+Now we'll add the following methods to `ThreesScore`:
+
+~~~~ {.java}
+		void computeScore() {
+			int sum = 0;
+			for(int i = 0; i < NUM_DICE; i++) {
+				if(dice[i].value == 2) {
+					sum += 3;
+				}
+			}
+			setOurScore(sum);
+		}
+        
+		void setOurScore(int s) {
+			ourScore = s;
+			t.setText(""+s);
+		}
+~~~~
+
+where `ourScore` is an integer instance variable of `ThreesScore`.
+Finally, call `threes.computeScore()` after rolling all five dice in
+`rollDice`.
+
+![With 'threes' scoring option](assets/threes.png)
+
+[Code up to here is available as git commit `097a491a`.]
+
+# Keep a global score
+
+Add these variables in `YatzyActivity`:
+
+~~~~ {.java}
+	TextView scoreText;
+	int score;
+~~~~
+
+Initialize the score view below the roll button:
+
+~~~~ {.java}
+        scoreText = new TextView(this);
+        scoreText.setText("Score: 0");
+        main.addView(scoreText);
+~~~~
+
+and use this method to update the score integer and the text view:
+
+~~~~ {.java} 
+	void setScore(int s) {
+		score = s;
+		scoreText.setText("Score: "+s);
+	}
+~~~~
+
+Now, when we click the button in the `Threes` scoring object, we can
+add a listener that will update the total score:
+
+~~~~ {.java}
+			b.setText("Threes");
+			b.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					setScore(score + ourScore);
+					b.setEnabled(false);
+				}
+			});
+~~~~
+
+[Code up to here is available as git commit `043b6b47`.]
+
