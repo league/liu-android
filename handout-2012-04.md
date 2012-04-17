@@ -458,6 +458,8 @@ class — management of the button, `ourScore`, etc. Then, in
 `rollDice`, call `computeScore` on *all* the scoring rules, not just
 `threes`.
 
+[Code up to here is available as git commit `b69d499f`.]
+
 Enjoy!
 
 
