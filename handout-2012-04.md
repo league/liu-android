@@ -450,3 +450,14 @@ add a listener that will update the total score:
 
 [Code up to here is available as git commit `043b6b47`.]
 
+# Generalize
+
+Try to write some other scoring rules, such as three of a kind or full
+house. Then, try to factor out what they have in common as a super
+class — management of the button, `ourScore`, etc. Then, in
+`rollDice`, call `computeScore` on *all* the scoring rules, not just
+`threes`.
+
+Enjoy!
+
+
