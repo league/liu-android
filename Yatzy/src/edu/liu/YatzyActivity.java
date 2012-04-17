@@ -17,6 +17,7 @@ public class YatzyActivity extends Activity {
 	Random rng = new Random();
 	Button roll;
 	int rollsLeft = 3;
+	ThreesScore threes;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,9 @@ public class YatzyActivity extends Activity {
 		});
         main.addView(roll);
 
+        threes = new ThreesScore(this);
+        main.addView(threes);
+        
         Button restart = new Button(this);
         restart.setText("Restart");
         restart.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +72,7 @@ public class YatzyActivity extends Activity {
 				}
 			}
 			setRollsLeft(rollsLeft-1);
+			threes.computeScore();
 		}
 	}
 
@@ -112,6 +117,34 @@ public class YatzyActivity extends Activity {
 		public void onClick(View v) {
 			this.on = !this.on;
 			setResource();
+		}
+    }
+    
+    class ThreesScore extends LinearLayout {
+    	Button b;
+    	TextView t;
+    	int ourScore;
+		public ThreesScore(Context context) {
+			super(context);
+			b = new Button(context);
+			b.setText("Threes");
+			addView(b);
+			t = new TextView(context);
+			t.setText("-");
+			addView(t);
+		}
+		void computeScore() {
+			int sum = 0;
+			for(int i = 0; i < NUM_DICE; i++) {
+				if(dice[i].value == 2) {
+					sum += 3;
+				}
+			}
+			setOurScore(sum);
+		}
+		void setOurScore(int s) {
+			ourScore = s;
+			t.setText(""+s);
 		}
     }
 }
